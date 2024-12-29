@@ -1,11 +1,12 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import queryString from 'query-string';
+import { useSearchParams } from "react-router-dom";
 
  function DetailedPage() {
  
-  // const result = 
+  const [searchParams] = useSearchParams();
+  const data = JSON.parse(searchParams.get("data") || "{}");
 
   const [details, setDetails] = useState("")
   const [pageLoading , setPageLoading] = useState(false)
@@ -18,50 +19,27 @@ import queryString from 'query-string';
     }
   }, []);
   
-  const fetchDetails = async () => {
-    try {
-      setPageLoading(true)
-      const response = await fetch('http://localhost:5000/gemini/detailedOverview', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ resumeText: resumeText, jobDescription: websiteContent }),
-      });
-      const data = await response.json()
-      setDetails(data)
-    } catch (error) {
-      console.error("Failed to fetch details:", error)
-    } finally {
-      setPageLoading(false)
-    }
-  }
-  const fetchCoverLetter = async () => {
-    try {
-      setPageLoading(true)
-      const response = await fetch('http://localhost:5000/gemini/coverLetter', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          resumeText: resumeText, 
-          jobDescription: websiteContent 
-        }),
-      });
-      const data = await response.json()
-      setDetails(data)
-    } catch (error) {
-      console.error("Failed to fetch details:", error)
-    } finally {
-      setPageLoading(false)
-    }
-  }
-
-    useEffect(() => {
-      fetchDetails()
-    }, [])
-
+  // const fetchCoverLetter = async () => {
+  //   try {
+  //     setPageLoading(true)
+  //     const response = await fetch('http://localhost:5000/gemini/coverLetter', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ 
+  //         resumeText: resumeText, 
+  //         jobDescription: websiteContent 
+  //       }),
+  //     });
+  //     const data = await response.json()
+  //     setDetails(data)
+  //   } catch (error) {
+  //     console.error("Failed to fetch details:", error)
+  //   } finally {
+  //     setPageLoading(false)
+  //   }
+  // }
 
   const features = [
     { name: 'Resume Skills', description: '' },
@@ -91,6 +69,27 @@ import queryString from 'query-string';
           </div>
         </nav>
       </header>
+
+      <div>
+      <h1>Detailed Overview</h1>
+      <div>
+        <h2>Job Description</h2>
+        <p>{data.jobDescription}</p>
+      </div>
+      <div>
+        <h2>Resume</h2>
+        <p>{data.resumeText}</p>
+      </div>
+      <div>
+        <h2>Extension Result</h2>
+        <pre>{JSON.stringify(data.extensionResult, null, 2)}</pre>
+      </div>
+      <div>
+        <h2>Detailed Overview</h2>
+        <pre>{JSON.stringify(data.detailedOverview, null, 2)}</pre>
+      </div>
+    </div>
+
 
       <div className="relative isolate px-6 pt-14 lg:px-8">
         <div

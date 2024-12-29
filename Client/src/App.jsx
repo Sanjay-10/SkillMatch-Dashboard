@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'; // Import Redux hooks
 import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Import Routes and Route from react-router-dom
 import Contact from './Pages/Contact';
 import DetailedPage from './Pages/DetailedPage';
-import Home from './Pages/HomePage';
+import HomePage from './Pages/HomePage';
 
 function App() {
   return (
@@ -12,8 +12,10 @@ function App() {
       <BrowserRouter>
         <Routes> 
           <Route path="/contact" element={<Contact />} />
-          <Route path="/detailed" element={<DetailedPage />} />
-          <Route path="/" element={<Home />} />
+          <Route path="/Overview" element={<DetailedPage />} />
+          <Route path="/Home" element={<HomePage />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="*" element={<HomePage />} /> 
         </Routes>
       </BrowserRouter>
     </div>

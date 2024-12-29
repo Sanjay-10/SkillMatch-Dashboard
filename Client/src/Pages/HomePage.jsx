@@ -2,10 +2,19 @@ import React from 'react';
 
 const HomePage = () => {
     return (
-    <div className='bg-gray-100'>
-            <h1 className='text-center font-bold text-gray-300'>Welcome to SkillMatch</h1>
-            <p className='text-blue-600'>Your one-stop solution for matching skills with opportunities.</p>
-    </div>
+        <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <h1>SkillMatch Chrome Extension</h1>
+        <p>Download our extension to get the most out of your job search experience!</p>
+        <a
+          href="https://chrome.google.com/webstore" // Add your extension's link here
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <button style={{ padding: "10px 20px", fontSize: "16px" }}>
+            Download Extension
+          </button>
+        </a>
+      </div>
       
     );
 };
