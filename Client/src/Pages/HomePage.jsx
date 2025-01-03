@@ -23,6 +23,12 @@ const HomePage = () => {
               overview
             </button>
             </Link>
+
+            <div className="flex flex-1 items-center justify-end p-1.5 font-semibold">
+                        <Link to="/contact">
+                          Contact Us <span aria-hidden="true">&rarr;</span>
+                        </Link>
+                      </div>
         </a>
       </div>
       
