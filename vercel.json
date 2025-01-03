@@ -1,9 +1,0 @@
-{
-    "rewrites": [
-      { "source": "/contact", "destination": "/" },
-      { "source": "/overview", "destination": "/" },
-      { "source": "/home", "destination": "/" },
-      { "source": "/", "destination": "/" }
-    ]
-  }
-  
