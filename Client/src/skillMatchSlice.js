@@ -1,13 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  resumeText: "",
-  fileName: "",
+  resume: "",
   result: "", 
-  isDarkMode: false,
-  resumeLoading: false,
-  geminiLoading: false,
-  resumeError: false,
+  jobDescription: "",
+  extensionData: {},
+  detailedOverview: {},
 };
 
 const skillMatchSlice = createSlice({
@@ -15,30 +13,24 @@ const skillMatchSlice = createSlice({
   initialState,
 
   reducers: {
-    setResumeText(state, action) {
-      state.resumeText = action.payload;
-    },
-    setFileName(state, action) {
-      state.fileName = action.payload;
+    setResume(state, action) {
+      state.resume = action.payload;
     },
     setResult(state, action) {
       state.result = action.payload;
     },
-    toggleDarkMode: (state) => {
-      state.isDarkMode = !state.isDarkMode;
+    setExtensionData(state, action) {
+      state.extensionData = action.payload;
     },
-    setResumeLoading: (state, action) => {
-      state.resumeLoading = action.payload; 
+    setJobDescription(state, action) {
+      state.jobDescription = action.payload;
     },
-    setGeminiLoading: (state, action) => {
-      state.geminiLoading = action.payload; 
-    },
-    setResumeError: (state, action) => {
-      state.resumeError = action.payload; 
+    setDetailedOverview(state, action) {
+      state.detailedOverview = action.payload;
     },
   },
 });
 
-export const { setResumeText, setFileName, setResult, toggleDarkMode, setResumeLoading, setGeminiLoading, setResumeError } = skillMatchSlice.actions;
+export const { setResume, setExtensionData, setJobDescription, setResult, setDetailedOverview } = skillMatchSlice.actions;
 
 export default skillMatchSlice.reducer;

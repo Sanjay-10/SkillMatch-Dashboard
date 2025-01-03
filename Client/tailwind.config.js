@@ -10,7 +10,11 @@ export default {
       fontFamily: {
         sans: ['Poppins', 'sans-serif'],
       },
-    },
+    backgroundImage:{
+      "bgi-blue" : "url('./src/assets/bg-blue.jpg')",
+      "bgi-gray" : "url('./src/assets/bg-gray.jpeg')",
+    }
+  }
   },
   plugins: [],
 }

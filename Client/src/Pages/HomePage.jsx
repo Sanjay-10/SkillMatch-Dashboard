@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const HomePage = () => {
     return (
-        <div style={{ textAlign: "center", marginTop: "50px" }}>
+        <div className="bg-bgi-gray bg-cover bg-center h-dvh  " style={{ textAlign: "center", marginTop: "50px" }}>
         <h1>SkillMatch Chrome Extension</h1>
         <p>Download our extension to get the most out of your job search experience!</p>
         <a
@@ -14,6 +14,9 @@ const HomePage = () => {
           <button style={{ padding: "10px 20px", fontSize: "16px" }}>
             Download Extension
           </button>
+          <p className="mt-2 text-gray-600 font-medium text-lg">
+          Your personalized analysis hub for resume and job description insights. Explore detailed skill alignment, tailored project recommendations, cover letter suggestions, and improvement tips to enhance your career prospects.
+          </p>
 
           <Link to="/overview">
             <button style={{ padding: "10px 20px", fontSize: "16px" }}>

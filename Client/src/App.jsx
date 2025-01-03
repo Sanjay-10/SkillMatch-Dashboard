@@ -6,6 +6,7 @@ import Contact from './Pages/Contact';
 import DetailedPage from './Pages/DetailedPage';
 import HomePage from './Pages/HomePage';
 
+
 function App() {
   return (
     <div>

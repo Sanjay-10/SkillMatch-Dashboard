@@ -1,0 +1,25 @@
+{
+    "name": "SkillMatch",
+    "version": "1.0",
+    "manifest_version": 3,
+    "background": {
+      "service_worker": "background.js"
+    },
+    "permissions": ["storage", "tabs", "activeTab"],
+    "host_permissions": ["<all_urls>"],
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>",    "http://localhost/*",
+        "https://*.vercel.app/*"],
+        "js": ["content.js"]
+      }
+    ],
+    "action": {
+      "default_popup": "index.html",
+      "default_icon": "./assets/SM-1024x1024.png"
+    },
+    "externally_connectable": {
+        "matches": ["https://*.vercel.app/*", "http://localhost/*"]
+      }
+  }
+  
