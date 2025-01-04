@@ -12,16 +12,16 @@ const HomePage = () => {
       <Header />
       <Background />       
 
-      <div className="mx-auto max-w-3xl py-16  ">
+      <div className="mx-auto  py-32 px-40  max-w-7xl ">
           <div className="text-center">
             <h1 className="text-balance text-5xl font-semibold tracking-tight text-gray-900 sm:text-7xl">
             SkillMatch Chrome Extension
             </h1>
             <p className="mt-8  text-pretty font-medium text-gray-600 text-xl/8">
             Your personalized analysis hub for resume and job description
-          insights. Explore detailed skill alignment, tailored project
-          recommendations, cover letter suggestions, and improvement tips to
-          enhance your career prospects.
+          insights. Explore detailed <span className="bg-green-100">skill alignment</span>, tailored <span className="bg-yellow-100">project
+          recommendations</span>, <span className="bg-purple-100">cover letter</span> suggestions, and <span className="bg-red-100">improvement tips</span> to
+          enhance your career prospects. 🚀📈💼
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <a
@@ -35,8 +35,9 @@ const HomePage = () => {
 
             </div>
           </div>
+          </div>
 
-          <div className=" flex justify-center  gap-x-8 gap-y-12 mt-16">
+          <div className=" flex justify-center  gap-x-8 gap-y-12 mb-16">
             <img
               className="h-96 border-2 border-gray-400"
               src={Home}
@@ -54,7 +55,7 @@ const HomePage = () => {
             />
 
           </div>
-        </div>
+        
 
     </div>
   );
