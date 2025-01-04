@@ -16,7 +16,6 @@ function DetailedPage() {
   const { resume, jobDescription, extensionData, detailedOverview } =
     useSelector((state) => state.skillMatch);
   const dispatch = useDispatch();
-  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -47,7 +46,6 @@ function DetailedPage() {
     };
 
     const fetchDetailedOverview = async () => {
-      console.log("fetching detailed overview");
       try {
         const response = await fetch(
           'https://skillmatch-server.vercel.app/gemini/detailedOverview',
@@ -56,12 +54,11 @@ function DetailedPage() {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ resumeText: fetchedData.resumeText.split('\n').join('  '), jobDescription }),
+            body: JSON.stringify({ resumeText: resume, jobDescription }),
           }
         );
         const data = await response.json();
         dispatch(setDetailedOverview(data.detailedOverview));
-        console.log(detailedOverview);
       } catch (error) {
         setError('Failed to fetch detailed overview', error);
       } finally {
@@ -109,7 +106,7 @@ function DetailedPage() {
     { name: "Key Areas for Improvement", description: areasOfImprovement },
     { name: "Actionable Recommendations ", description: recommendations },
     { name: "Project Recommendations", description: projectEnhancement },
-    { name: "Resume Overview", description: resumeReview },
+    { name: "Resume Insights", description: resumeReview },
   ];
 
   if (loading) {
