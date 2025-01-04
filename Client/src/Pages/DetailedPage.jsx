@@ -56,7 +56,7 @@ function DetailedPage() {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ resumeText: resume, jobDescription }),
+            body: JSON.stringify({ resumeText: fetchedData.resumeText.split('\n').join('  '), jobDescription }),
           }
         );
         const data = await response.json();
@@ -109,7 +109,7 @@ function DetailedPage() {
     { name: "Key Areas for Improvement", description: areasOfImprovement },
     { name: "Actionable Recommendations ", description: recommendations },
     { name: "Project Recommendations", description: projectEnhancement },
-    { name: "Resume Insights", description: resumeReview },
+    { name: "Resume Overview", description: resumeReview },
   ];
 
   if (loading) {
