@@ -6,7 +6,6 @@ import Contact from './Pages/Contact';
 import DetailedPage from './Pages/DetailedPage';
 import HomePage from './Pages/HomePage';
 
-
 function App() {
   return (
     <div>
@@ -16,7 +15,7 @@ function App() {
           <Route path="/overview" element={<DetailedPage />} />
           <Route path="/home" element={<HomePage />} />
           <Route path="/" element={<HomePage />} />
-          {/* <Route path="*" element={<HomePage />} />  */}
+          <Route path="*" element={<HomePage />} /> 
         </Routes>
       </BrowserRouter>
     </div>
