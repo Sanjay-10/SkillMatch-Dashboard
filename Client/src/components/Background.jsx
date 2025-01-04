@@ -2,7 +2,7 @@ import React from 'react'
 
 function Background() {
   return (
-    <div>
+    <div className="">
           <div className="relative isolate  pt-14 px-8">
         <div
           aria-hidden="true"

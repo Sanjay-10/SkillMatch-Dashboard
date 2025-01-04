@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Background from "../components/Background";
 import Home from "../assets/Home.png";
 import Analyze from "../assets/Analyze.png";
+import Analyze2 from "../assets/Analyze-2.png";
 
 const HomePage = () => {
   return (
@@ -44,6 +45,11 @@ const HomePage = () => {
             <img
               className="h-96 border-2 border-gray-400"
               src={Analyze}
+              alt="Analyze ScreenShot"
+            />
+            <img
+              className="h-96 border-2 border-gray-400"
+              src={Analyze2}
               alt="Analyze ScreenShot"
             />
 
