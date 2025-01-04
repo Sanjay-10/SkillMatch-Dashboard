@@ -11,7 +11,7 @@ const HomePage = () => {
       <Header />
       <Background />       
 
-      <div className="mx-auto max-w-2xl py-16  ">
+      <div className="mx-auto max-w-3xl py-16  ">
           <div className="text-center">
             <h1 className="text-balance text-5xl font-semibold tracking-tight text-gray-900 sm:text-7xl">
             SkillMatch Chrome Extension
