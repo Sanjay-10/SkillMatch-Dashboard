@@ -16,6 +16,7 @@ function DetailedPage() {
   const { resume, jobDescription, extensionData, detailedOverview } =
     useSelector((state) => state.skillMatch);
   const dispatch = useDispatch();
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -34,27 +35,19 @@ function DetailedPage() {
       console.log("1st if condition activated")
       return;
       }
-      if (event.data.type && event.data.type === 'FROM_CONTENT_SCRIPT') {
+      if (event.data.type === 'FROM_CONTENT_SCRIPT') {
         const fetchedData = event.data.data;
         console.log("2nd if condition");
         dispatch(setExtensionData(fetchedData));
         dispatch(setResume(fetchedData.resumeText.split('\n').join('  ')));
         dispatch(setJobDescription(fetchedData.jobDescription.split('\n').join('  ')));
-        sessionStorage.setItem('extensionData', JSON.stringify(fetchedData));
+        sessionStorage.setItem('extensionData', JSON.stringify(fetchedData), false);
         setLoading(false); // End loading after data is processed
       }
     };
 
-    window.addEventListener('message', messageHandler);
-    console.log("Event Listener added");
-
-    return () => {
-      window.removeEventListener('message', messageHandler);
-    };
-  }, [dispatch, setLoading]);
-
-  useEffect(() => {
     const fetchDetailedOverview = async () => {
+      console.log("fetching detailed overview");
       try {
         const response = await fetch(
           'https://skillmatch-server.vercel.app/gemini/detailedOverview',
@@ -68,7 +61,7 @@ function DetailedPage() {
         );
         const data = await response.json();
         dispatch(setDetailedOverview(data.detailedOverview));
-        setLoading(false);
+        console.log(detailedOverview);
       } catch (error) {
         setError('Failed to fetch detailed overview', error);
       } finally {
@@ -76,10 +69,15 @@ function DetailedPage() {
       }
     };
 
-    if (resume && jobDescription) {
-      fetchDetailedOverview();
-    }
-  }, []);
+    fetchDetailedOverview();
+
+    window.addEventListener('message', messageHandler);
+    console.log("Event Listener added");
+
+    return () => {
+      window.removeEventListener('message', messageHandler);
+    };  
+  }, [loading]);
 
   const resumeSkills = extensionData?.extensionResult?.resumeSkills || '';
   const jobDescriptionSkills = extensionData?.extensionResult?.jobDescriptionSkills || '';
