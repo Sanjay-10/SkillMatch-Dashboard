@@ -11,6 +11,8 @@ import {
 } from "../skillMatchSlice";
 import GreenBadge from "../components/GreenBadge";
 import RedBadge from "../components/RedBadge";
+import Header from "../components/Header";
+import Background from "../components/Background";
 
 function DetailedPage() {
   const { resume, jobDescription, extensionData, detailedOverview } =
@@ -128,40 +130,12 @@ function DetailedPage() {
   }
   return (
     <div className="bg-white">
-      <header className="absolute max-w-7xl mx-auto px-8 inset-x-0 top-0 z-50  ">
-        <nav
-          aria-label="Global"
-          className="flex items-center justify-between  mt-5 " 
-        >
-          <div className="flex lg:flex-1 ">
-            <h5 className="SkillMatch text-[#007bff] font-semibold -m-1.5 p-1.5 text-3xl">
-              SkillMatch
-            </h5>
-          </div>
-          <div className="flex flex-1 items-center justify-end p-1.5 font-semibold">
-            <Link to="/contact">
-              Contact Us <span aria-hidden="true">&rarr;</span>
-            </Link>
-          </div>
-        </nav>
-      </header>
+
+      <Header />
+      <Background />
 
       <div className="relative isolate  pt-14 px-8">
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
-        >
-          <div
-            style={{
-              clipPath:
-                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-            }}
-            className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#1e3b9a] to-[#268bfd] opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"
-          />
-        </div>
-
         {/* MAIN CONTENT */}
-
         <div className="mx-auto  items-center gap-x-8 gap-y-12  max-w-7xl grid-cols-3 px-8">
           <div className=" pt-4 mt-8  px-3">
             <dt className="font-medium text-xl text-black">Resume Insights</dt>
@@ -295,19 +269,7 @@ function DetailedPage() {
         </div>
 
         {/* MAIN CONTENT END */}
-
-        <div
-          aria-hidden="true"
-          className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
-        >
-          <div
-            style={{
-              clipPath:
-                "polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)",
-            }}
-            className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#4fc8f8] to-[#1a27db] opacity-30 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
-          />
-        </div>        
+       
       </div>
     </div>
   );

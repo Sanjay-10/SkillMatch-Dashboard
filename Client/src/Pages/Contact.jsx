@@ -2,6 +2,7 @@ import { useState } from 'react';
 import emailjs from 'emailjs-com'; // Import EmailJS
 import success from '/src/assets/success.png';
 import fail from '/src/assets/failed.png';
+import { Link } from 'react-router-dom';
 
 function Contact() {
   const [isSent, setIsSent] = useState(null); 
@@ -74,9 +75,11 @@ function Contact() {
         <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-12">
           <div className="flex lg:flex-1">
             <div className="-m-1.5 p-1.5 text-2xl ">
-              <h5 className="SkillMatch font-semibold cursor-default">
+              <Link to="/">
+              <h5 className="SkillMatch font-semibold ">
                 SkillMatch
                 </h5>
+                </Link>
               </div>
           </div>
         </nav>
