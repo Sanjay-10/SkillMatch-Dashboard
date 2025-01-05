@@ -19,8 +19,8 @@ const HomePage = () => {
             </h1>
             <p className="mt-8  text-pretty font-medium text-gray-600 text-xl/8">
             Your personalized analysis hub for resume and job description
-          insights. Explore detailed <span className="bg-green-100">skill alignment</span>, tailored <span className="bg-yellow-100">project
-          recommendations</span>, <span className="bg-purple-100">cover letter</span> suggestions, and <span className="bg-red-100">improvement tips</span> to
+          insights. Explore detailed <span className="bg-green-100">Skill alignment</span>, tailored <span className="bg-yellow-100">Project
+          recommendations</span>, <span className="bg-purple-100">Cover letter</span> suggestions, and <span className="bg-red-100">Improvement tips</span> to
           enhance your career prospects. 🚀📈💼
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
@@ -39,17 +39,17 @@ const HomePage = () => {
 
           <div className=" flex justify-center  gap-x-8 gap-y-12 mb-16">
             <img
-              className="h-96 border-2 border-gray-400"
+              className="h-96 border-2 border-gray-400 shadow-2xl shadow-gray-500 hover:shadow-[#70a1d6]"
               src={Home}
               alt="Home ScreenShot"
             />
             <img
-              className="h-96 border-2 border-gray-400"
+              className="h-96 border-2 border-gray-400 shadow-2xl shadow-gray-500 hover:shadow-[#70a1d6]"
               src={Analyze}
               alt="Analyze ScreenShot"
             />
             <img
-              className="h-96 border-2 border-gray-400"
+              className="h-96 border-2 border-gray-400 shadow-2xl shadow-gray-500 hover:shadow-[#70a1d6]"
               src={Analyze2}
               alt="Analyze ScreenShot"
             />
