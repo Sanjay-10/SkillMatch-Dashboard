@@ -1,72 +1,82 @@
+import React from "react";
 import { useState, useEffect, useRef } from "react";
 // import { Link } from "react-router-dom";
 import GreenBadge from "../components/GreenBadge";
 import RedBadge from "../components/RedBadge";
 import Header from "../components/Header";
 import Background from "../components/Background";
+import { CheckIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
+import { Button } from "@material-tailwind/react";
 
 function DetailedPage() {
-
-  const [resume, setResume] = useState('');
+  const [resume, setResume] = useState("");
   const [extensionData, setExtensionData] = useState({});
-  const [jobDescription, setJobDescription] = useState('');
+  const [jobDescription, setJobDescription] = useState("");
   const [detailedOverview, setDetailedOverview] = useState({});
   const [coverLoading, setCoverLoading] = useState(false);
-  
+  const [coverLetter, setCoverLetter] = useState("");
+  const [copied, setCopied] = React.useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const targetDivRef = useRef(null);
 
   const scrollToDiv = () => {
-    targetDivRef.current.scrollIntoView({ behavior: 'smooth' });
+    targetDivRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(coverLetter).catch((err) => {
+      console.error("Failed to copy text: ", err);
+    });
+    setCopied(true);
   };
 
   useEffect(() => {
-    const uniqueId = new URLSearchParams(window.location.search).get('data');
+    const uniqueId = new URLSearchParams(window.location.search).get("data");
     if (uniqueId) {
       window.postMessage(
-        { type: 'FROM_REACT_APP', action: 'getData', uniqueId },
-        '*'
+        { type: "FROM_REACT_APP", action: "getData", uniqueId },
+        "*"
       );
     }
-  
+
     const messageHandler = (event) => {
       if (event.source !== window) return;
-  
-      if (event.data.type === 'FROM_CONTENT_SCRIPT') {
+
+      if (event.data.type === "FROM_CONTENT_SCRIPT") {
         const fetchedData = event.data.data;
         console.log("2nd if condition");
         console.log("Extension Data", fetchedData);
-  
+
         const resumeText = fetchedData.resumeText
-          ? fetchedData.resumeText.split('\n').join(' ')
-          : '';
+          ? fetchedData.resumeText.split("\n").join(" ")
+          : "";
         const jobDesc = fetchedData.jobDescription
-          ? fetchedData.jobDescription.split('\n').join(' ')
-          : '';
-  
+          ? fetchedData.jobDescription.split("\n").join(" ")
+          : "";
+
         // Set states for resume and job description
         console.log("Resume (before state update):", resumeText);
         console.log("Job Description (before state update):", jobDesc);
-  
+
         setResume(resumeText);
         setJobDescription(jobDesc);
         setExtensionData(fetchedData);
-  
+
         // Save for debugging or persistence
-        sessionStorage.setItem('extensionData', JSON.stringify(fetchedData));
+        sessionStorage.setItem("extensionData", JSON.stringify(fetchedData));
       }
     };
-  
+
     console.log("message handler useEffect");
-    window.addEventListener('message', messageHandler);
-  
+    window.addEventListener("message", messageHandler);
+
     return () => {
-      window.removeEventListener('message', messageHandler);
+      window.removeEventListener("message", messageHandler);
     };
   }, []);
-  
+
   // Trigger `fetchDetailedOverview` only when both `resume` and `jobDescription` are updated
   useEffect(() => {
     const fetchDetailedOverview = async () => {
@@ -74,17 +84,17 @@ function DetailedPage() {
         console.log("fetch detailed overview not run"); // Wait until both `resume` and `jobDescription` are populated
         return;
       }
-  
+
       try {
         console.log("Before fetch: Resume =", resume);
         console.log("Before fetch: Job Description =", jobDescription);
-  
+
         const response = await fetch(
-          'https://skillmatch-server.vercel.app/gemini/detailedOverview',
+          "https://skillmatch-server.vercel.app/gemini/detailedOverview",
           {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({ resumeText: resume, jobDescription }),
           }
@@ -92,68 +102,85 @@ function DetailedPage() {
         const data = await response.json();
         setDetailedOverview(data.detailedOverview);
       } catch (error) {
-        console.error('Failed to fetch detailed overview:', error);
-        setError('Failed to fetch detailed overview');
+        console.error("Failed to fetch detailed overview:", error);
+        setError("Failed to fetch detailed overview");
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchDetailedOverview();
   }, [resume, jobDescription]); // Dependency array ensures it runs when both are updated
-  
 
   const fetchCoverLetter = async () => {
     try {
       setCoverLoading(true);
       const response = await fetch(
-        'https://skillmatch-server.vercel.app/gemini/coverLetter',
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ resumeText: resume, jobDescription }),
-          }
-      ); 
+        "https://skillmatch-server.vercel.app/gemini/coverLetter",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ resumeText: resume, jobDescription }),
+        }
+      );
       const data = await response.text();
-      console.log("Cover Letter Data", data);
+      const parsedData = JSON.parse(data);
+      setCoverLetter(parsedData.coverLetter);
+      // console.log("Cover Letter:", data);
     } catch (error) {
-      console.error('Failed to fetch detailed overview:', error);
-      setError('Failed to fetch detailed overview');
+      console.error("Failed to fetch detailed overview:", error);
+      setError("Failed to fetch detailed overview");
     } finally {
       setCoverLoading(false);
     }
   };
 
-  const resumeSkills = extensionData?.extensionResult?.resumeSkills || '';
-  const jobDescriptionSkills = extensionData?.extensionResult?.jobDescriptionSkills || '';
-  const missingSkills = extensionData?.extensionResult?.missingSkills || '';
-  const percentageMatch = extensionData?.extensionResult?.percentageMatch || '';
-  const areasOfImprovement = detailedOverview.areasOfImprovement || '';
-  const recommendations = detailedOverview.recommendations || '';
-  const projectEnhancement = detailedOverview.projectEnhancement || '';
-  const resumeReview = detailedOverview.resumeReview || '';
+  const resumeSkills = extensionData?.extensionResult?.resumeSkills || "";
+  const jobDescriptionSkills =
+    extensionData?.extensionResult?.jobDescriptionSkills || "";
+  const missingSkills = extensionData?.extensionResult?.missingSkills || "";
+  const percentageMatch = extensionData?.extensionResult?.percentageMatch || "";
+  const areasOfImprovement = detailedOverview.areasOfImprovement || "";
+  const recommendations = detailedOverview.recommendations || "";
+  const projectEnhancement = detailedOverview.projectEnhancement || "";
+  const resumeReview = detailedOverview.resumeReview || "";
 
   const resumeSkillsFormated = resumeSkills
-  ? resumeSkills.split(",").map((skill) => skill.trim())
-  : [];
+    ? resumeSkills.split(",").map((skill) => skill.trim())
+    : [];
 
-const jobDescriptionSkillsFormated = Array.isArray(jobDescriptionSkills) && jobDescriptionSkills[0]
-  ? jobDescriptionSkills[0].split(", ").map((skill) => skill.trim())
-  : [];
+  const jobDescriptionSkillsFormated =
+    Array.isArray(jobDescriptionSkills) && jobDescriptionSkills[0]
+      ? jobDescriptionSkills[0].split(", ").map((skill) => skill.trim())
+      : [];
 
   const features = [
     { name: "Resume Skills", description: resumeSkillsFormated || [] },
-    { name: "Job Description Skills", description: jobDescriptionSkillsFormated || [] },
+    {
+      name: "Job Description Skills",
+      description: jobDescriptionSkillsFormated || [],
+    },
     { name: "Missing Skills", description: missingSkills || [] },
     { name: "Match Percentage", description: percentageMatch || "N/A" },
-    { name: "Key Areas for Improvement", description: areasOfImprovement || "None" },
-    { name: "Actionable Recommendations", description: recommendations || "No recommendations available" },
-    { name: "Project Recommendations", description: projectEnhancement || "None" },
-    { name: "Resume Insights", description: resumeReview || "No insights available" },
+    {
+      name: "Key Areas for Improvement",
+      description: areasOfImprovement || "None",
+    },
+    {
+      name: "Actionable Recommendations",
+      description: recommendations || "No recommendations available",
+    },
+    {
+      name: "Project Recommendations",
+      description: projectEnhancement || "None",
+    },
+    {
+      name: "Resume Insights",
+      description: resumeReview || "No insights available",
+    },
   ];
-  
 
   if (loading) {
     return (
@@ -162,8 +189,6 @@ const jobDescriptionSkillsFormated = Array.isArray(jobDescriptionSkills) && jobD
       </div>
     );
   }
-  
- 
 
   if (error) {
     return (
@@ -174,32 +199,36 @@ const jobDescriptionSkillsFormated = Array.isArray(jobDescriptionSkills) && jobD
   }
   return (
     <div className="bg-white">
-
       <Header />
       <Background />
 
-
       <div className="relative isolate  pt-14 px-8">
-     
         {/* MAIN CONTENT */}
         <div className="mx-auto  items-center gap-x-8 gap-y-12  max-w-7xl grid-cols-3 px-8">
-      <div className=" items-center  font-semibold ">
-        <button onClick={fetchCoverLetter} className =  "bg-blue-600  border-2 border-dashed   text-white font-semibold px-4 py-2 rounded-md  hover:bg-blue-700  " >
-        Generate Cover Letter
-      </button>
-        </div>
-          <div className=" pt-4 mt-8  px-3">
-            <dt className="font-medium text-xl text-black">Resume Insights</dt>
-            <dd className="text-lg pt-3  text-gray-800 ">
-              {resumeReview}
-            </dd>
+          <div className=" items-center  font-medium ">
+            <button
+              onClick={() => {
+                fetchCoverLetter();
+                scrollToDiv();
+              }}
+              className="bg-blue-600  text-white text-sm font-semibold px-4 py-2 rounded-md  hover:bg-blue-700  "
+            >
+              Generate Cover Letter
+            </button>
           </div>
 
-          <div >
+          <div className=" pt-4 mt-8  px-3">
+            <dt className="font-semibold text-2xl text-black">
+              Resume Insights
+            </dt>
+            <dd className="text-lg pt-3  text-gray-800 ">{resumeReview}</dd>
+          </div>
+
+          <div>
             <h2 className="text-2xl font-bold tracking-tight text-black sm:text-4xl"></h2>
 
             <div className="mt-6  px-3 pt-4 border-t border-gray-400">
-             {/* <h1 className="text-blue-600 font font-medium text-xl bg pb-3">Overview</h1>  */}
+              {/* <h1 className="text-blue-600 font font-medium text-xl bg pb-3">Overview</h1>  */}
               <div className="mt-1 grid  gap-x-2 gap-y-3 grid-cols-2  ">
                 <div>
                   <h2 className="text-[17px] mt-3  font-semibold tracking-tight text-black ">
@@ -280,9 +309,9 @@ const jobDescriptionSkillsFormated = Array.isArray(jobDescriptionSkills) && jobD
                     key={feature.name}
                     className="border-t  border-gray-400 pt-4 px-3"
                   >
-                    <dt className="font-medium text-xl  text-black">
+                    <dt className=" text-2xl font-semibold  text-black">
                       {feature.name === "Missing Skills"
-                        ? feature.name + " - " +  missingSkills.length
+                        ? feature.name + " - " + missingSkills.length
                         : feature.name}
                     </dt>
                     <dd className="mt-2 py-6 text-lg text-gray-800 ">
@@ -310,17 +339,66 @@ const jobDescriptionSkillsFormated = Array.isArray(jobDescriptionSkills) && jobD
                 ))}
             </dl>
           </div>
-          <div ref={targetDivRef} className="height">
-          <div className="h-full bg-gray-100 p-4">
-            <p className="text-gray-700">
-              This is a full height text container. You can add any content here and it will take up the full height of its parent container.
-            </p>
+
+          {/* COVER LETTER */}
+          <div ref={targetDivRef} className=" mt-8 pb-40 relative">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight text-black sm:text-4xl">
+                Cover Letter
+              </h2>
+
+              <div className="absolute top-1 right-4">
+                {coverLetter && (
+                  <Button
+                    size="lg"
+                    onMouseLeave={() => setCopied(false)}
+                    onClick={() => {
+                      copyToClipboard();
+                    }}
+                    className="flex items-center gap-2 py-2 px-5 rounded-md bg-black hover:bg-black"
+                  >
+                    {copied ? (
+                      <>
+                        <CheckIcon className="h-4 w-4  text-white" />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <DocumentDuplicateIcon className="h-4 w-4  text-white" />
+                        Copy
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+
+              <div className="mt-4 p-4 border bg-blue-50 border-blue-300  rounded-md">
+                {coverLoading ? (
+                  <p className="text-lg font-semibold  text-blue-600">
+                    Loading...
+                  </p>
+                ) : (
+                  <p className="text-[15px] font-medium text-gray-800 whitespace-pre-line">
+                    {coverLetter || (
+                      <div className=" items-center  font-medium ">
+                        <button
+                          onClick={() => {
+                            fetchCoverLetter();
+                          }}
+                          className="bg-blue-600  text-white text-sm font-semibold px-4 py-2 rounded-md  hover:bg-blue-700  "
+                        >
+                          Generate Cover Letter
+                        </button>
+                      </div>
+                    )}
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
         </div>
 
         {/* MAIN CONTENT END */}
-       
       </div>
     </div>
   );
