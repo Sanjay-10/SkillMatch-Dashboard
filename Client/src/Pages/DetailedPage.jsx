@@ -11,6 +11,7 @@ function DetailedPage() {
   const [extensionData, setExtensionData] = useState({});
   const [jobDescription, setJobDescription] = useState('');
   const [detailedOverview, setDetailedOverview] = useState({});
+  const [coverLoading, setCoverLoading] = useState(false);
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -102,6 +103,29 @@ function DetailedPage() {
   }, [resume, jobDescription]); // Dependency array ensures it runs when both are updated
   
 
+  const fetchCoverLetter = async () => {
+    try {
+      setCoverLoading(true);
+      const response = await fetch(
+        'https://skillmatch-server.vercel.app/gemini/coverLetter',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ resumeText: resume, jobDescription }),
+          }
+      ); 
+      const data = await response.text();
+      console.log("Cover Letter Data", data);
+    } catch (error) {
+      console.error('Failed to fetch detailed overview:', error);
+      setError('Failed to fetch detailed overview');
+    } finally {
+      setCoverLoading(false);
+    }
+  };
+
   const resumeSkills = extensionData?.extensionResult?.resumeSkills || '';
   const jobDescriptionSkills = extensionData?.extensionResult?.jobDescriptionSkills || '';
   const missingSkills = extensionData?.extensionResult?.missingSkills || '';
@@ -160,7 +184,7 @@ const jobDescriptionSkillsFormated = Array.isArray(jobDescriptionSkills) && jobD
         {/* MAIN CONTENT */}
         <div className="mx-auto  items-center gap-x-8 gap-y-12  max-w-7xl grid-cols-3 px-8">
       <div className=" items-center  font-semibold ">
-        <button onClick={scrollToDiv} className =  "bg-blue-600  border-2 border-dashed   text-white font-semibold px-4 py-2 rounded-md  hover:bg-blue-700  " >
+        <button onClick={fetchCoverLetter} className =  "bg-blue-600  border-2 border-dashed   text-white font-semibold px-4 py-2 rounded-md  hover:bg-blue-700  " >
         Generate Cover Letter
       </button>
         </div>
