@@ -1,25 +1,25 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  setResume,
-  setResult,
-  setJobDescription,
-  setExtensionData,
-  setDetailedOverview,
-} from "../skillMatchSlice";
+import { useState, useEffect, useRef } from "react";
+// import { Link } from "react-router-dom";
 import GreenBadge from "../components/GreenBadge";
 import RedBadge from "../components/RedBadge";
 import Header from "../components/Header";
 import Background from "../components/Background";
 
 function DetailedPage() {
-  const { resume, jobDescription, extensionData, detailedOverview } =
-    useSelector((state) => state.skillMatch);
-  const dispatch = useDispatch();
+
+  const [resume, setResume] = useState('');
+  const [extensionData, setExtensionData] = useState({});
+  const [jobDescription, setJobDescription] = useState('');
+  const [detailedOverview, setDetailedOverview] = useState({});
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const targetDivRef = useRef(null);
+
+  const scrollToDiv = () => {
+    targetDivRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const uniqueId = new URLSearchParams(window.location.search).get('data');
@@ -29,26 +29,55 @@ function DetailedPage() {
         '*'
       );
     }
-
+  
     const messageHandler = (event) => {
-      console.log("running")
-      if (event.source !== window) {
-      console.log("1st if condition activated")
-      return;
-      }
+      if (event.source !== window) return;
+  
       if (event.data.type === 'FROM_CONTENT_SCRIPT') {
         const fetchedData = event.data.data;
         console.log("2nd if condition");
-        dispatch(setExtensionData(fetchedData));
-        dispatch(setResume(fetchedData.resumeText.split('\n').join('  ')));
-        dispatch(setJobDescription(fetchedData.jobDescription.split('\n').join('  ')));
-        sessionStorage.setItem('extensionData', JSON.stringify(fetchedData), false);
-        setLoading(false); // End loading after data is processed
+        console.log("Extension Data", fetchedData);
+  
+        const resumeText = fetchedData.resumeText
+          ? fetchedData.resumeText.split('\n').join(' ')
+          : '';
+        const jobDesc = fetchedData.jobDescription
+          ? fetchedData.jobDescription.split('\n').join(' ')
+          : '';
+  
+        // Set states for resume and job description
+        console.log("Resume (before state update):", resumeText);
+        console.log("Job Description (before state update):", jobDesc);
+  
+        setResume(resumeText);
+        setJobDescription(jobDesc);
+        setExtensionData(fetchedData);
+  
+        // Save for debugging or persistence
+        sessionStorage.setItem('extensionData', JSON.stringify(fetchedData));
       }
     };
-
+  
+    console.log("message handler useEffect");
+    window.addEventListener('message', messageHandler);
+  
+    return () => {
+      window.removeEventListener('message', messageHandler);
+    };
+  }, []);
+  
+  // Trigger `fetchDetailedOverview` only when both `resume` and `jobDescription` are updated
+  useEffect(() => {
     const fetchDetailedOverview = async () => {
+      if (!resume || !jobDescription) {
+        console.log("fetch detailed overview not run"); // Wait until both `resume` and `jobDescription` are populated
+        return;
+      }
+  
       try {
+        console.log("Before fetch: Resume =", resume);
+        console.log("Before fetch: Job Description =", jobDescription);
+  
         const response = await fetch(
           'https://skillmatch-server.vercel.app/gemini/detailedOverview',
           {
@@ -60,23 +89,18 @@ function DetailedPage() {
           }
         );
         const data = await response.json();
-        dispatch(setDetailedOverview(data.detailedOverview));
+        setDetailedOverview(data.detailedOverview);
       } catch (error) {
-        setError('Failed to fetch detailed overview', error);
+        console.error('Failed to fetch detailed overview:', error);
+        setError('Failed to fetch detailed overview');
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchDetailedOverview();
-
-    window.addEventListener('message', messageHandler);
-    console.log("Event Listener added");
-
-    return () => {
-      window.removeEventListener('message', messageHandler);
-    };  
-  }, [loading]);
+  }, [resume, jobDescription]); // Dependency array ensures it runs when both are updated
+  
 
   const resumeSkills = extensionData?.extensionResult?.resumeSkills || '';
   const jobDescriptionSkills = extensionData?.extensionResult?.jobDescriptionSkills || '';
@@ -88,28 +112,24 @@ function DetailedPage() {
   const resumeReview = detailedOverview.resumeReview || '';
 
   const resumeSkillsFormated = resumeSkills
-    .split(",")
-    .map((skill) => skill.trim());
+  ? resumeSkills.split(",").map((skill) => skill.trim())
+  : [];
 
-    // console.log(resumeSkillsFormated);
-
-  const jobDescriptionSkillsFormated = jobDescriptionSkills[0]
-    .split(", ")
-    .map((skill) => skill.trim());
+const jobDescriptionSkillsFormated = Array.isArray(jobDescriptionSkills) && jobDescriptionSkills[0]
+  ? jobDescriptionSkills[0].split(", ").map((skill) => skill.trim())
+  : [];
 
   const features = [
-    { name: "Resume Skills", description: resumeSkillsFormated },
-    {
-      name: "Job Description Skills",
-      description: jobDescriptionSkillsFormated,
-    },
-    { name: "Missing Skills", description: missingSkills },
-    { name: "Match Percentage", description: percentageMatch },
-    { name: "Key Areas for Improvement", description: areasOfImprovement },
-    { name: "Actionable Recommendations ", description: recommendations },
-    { name: "Project Recommendations", description: projectEnhancement },
-    { name: "Resume Insights", description: resumeReview },
+    { name: "Resume Skills", description: resumeSkillsFormated || [] },
+    { name: "Job Description Skills", description: jobDescriptionSkillsFormated || [] },
+    { name: "Missing Skills", description: missingSkills || [] },
+    { name: "Match Percentage", description: percentageMatch || "N/A" },
+    { name: "Key Areas for Improvement", description: areasOfImprovement || "None" },
+    { name: "Actionable Recommendations", description: recommendations || "No recommendations available" },
+    { name: "Project Recommendations", description: projectEnhancement || "None" },
+    { name: "Resume Insights", description: resumeReview || "No insights available" },
   ];
+  
 
   if (loading) {
     return (
@@ -134,9 +154,16 @@ function DetailedPage() {
       <Header />
       <Background />
 
+
       <div className="relative isolate  pt-14 px-8">
+     
         {/* MAIN CONTENT */}
         <div className="mx-auto  items-center gap-x-8 gap-y-12  max-w-7xl grid-cols-3 px-8">
+      <div className=" items-center  font-semibold ">
+        <button onClick={scrollToDiv} className =  "bg-blue-600  border-2 border-dashed   text-white font-semibold px-4 py-2 rounded-md  hover:bg-blue-700  " >
+        Generate Cover Letter
+      </button>
+        </div>
           <div className=" pt-4 mt-8  px-3">
             <dt className="font-medium text-xl text-black">Resume Insights</dt>
             <dd className="text-lg pt-3  text-gray-800 ">
@@ -259,13 +286,13 @@ function DetailedPage() {
                 ))}
             </dl>
           </div>
-          {/* <div className="height">
+          <div ref={targetDivRef} className="height">
           <div className="h-full bg-gray-100 p-4">
             <p className="text-gray-700">
               This is a full height text container. You can add any content here and it will take up the full height of its parent container.
             </p>
           </div>
-        </div> */}
+        </div>
         </div>
 
         {/* MAIN CONTENT END */}
