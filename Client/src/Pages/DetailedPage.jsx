@@ -8,6 +8,7 @@ import Background from "../components/Background";
 import { CheckIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 import { Button } from "@material-tailwind/react";
 
+
 function DetailedPage() {
   const [resume, setResume] = useState("");
   const [extensionData, setExtensionData] = useState({});
@@ -33,6 +34,7 @@ function DetailedPage() {
   };
 
   useEffect(() => {
+
     const uniqueId = new URLSearchParams(window.location.search).get("data");
     if (uniqueId) {
       window.postMessage(
@@ -40,6 +42,11 @@ function DetailedPage() {
         "*"
       );
     }
+
+  }, []);
+    
+  
+  useEffect(() => {
 
     const messageHandler = (event) => {
       if (event.source !== window) return;
