@@ -43,7 +43,7 @@ function DetailedPage() {
       setResume(parsedData.resumeText.replace(/\n/g, " "));
       setJobDescription(parsedData.jobDescription.replace(/\n/g, " "));
       setExtensionData(parsedData);
-      console.log("Loaded data from sessionStorage");
+      // console.log("Loaded data from sessionStorage");
       return; // Skip polling if data is already present
     }
   
@@ -53,7 +53,7 @@ function DetailedPage() {
   
       if (event.data?.type === "FROM_CONTENT_SCRIPT") {
         const fetchedData = event.data.data;
-        console.log("Received data from content script:", fetchedData);
+        // console.log("Received data from content script:", fetchedData);
   
         const resumeText = fetchedData.resumeText?.replace(/\n/g, " ") || "";
         const jobDesc = fetchedData.jobDescription?.replace(/\n/g, " ") || "";
@@ -68,7 +68,7 @@ function DetailedPage() {
         // Stop polling once data is received
         if (interval) {
           clearInterval(interval);
-          console.log("Polling stopped as data has been received.");
+          // console.log("Polling stopped as data has been received.");
         }
       }
     };
@@ -80,7 +80,7 @@ function DetailedPage() {
     interval = setInterval(() => {
       const uniqueId = new URLSearchParams(window.location.search).get("data");
       if (uniqueId) {
-        console.log("Polling for data with uniqueId:", uniqueId);
+        // console.log("Polling for data with uniqueId:", uniqueId);
         window.postMessage(
           { type: "FROM_REACT_APP", action: "getData", uniqueId },
           "*"
@@ -101,13 +101,10 @@ function DetailedPage() {
   useEffect(() => {
     const fetchDetailedOverview = async () => {
       if (!resume || !jobDescription) {
-        console.log("fetch detailed overview not run"); // Wait until both `resume` and `jobDescription` are populated
         return;
       }
 
       try {
-        console.log("Before fetch: Resume =", resume);
-        console.log("Before fetch: Job Description =", jobDescription);
 
         const response = await fetch(
           "https://skillmatch-server.vercel.app/gemini/detailedOverview",
@@ -398,7 +395,7 @@ function DetailedPage() {
                     Loading...
                   </p>
                 ) : (
-                  <p className="text-[15px] font-medium text-gray-800 whitespace-pre-line">
+                  <div className="text-[15px] font-medium text-gray-800 whitespace-pre-line">
                     {coverLetter || (
                       <div className=" items-center  font-medium ">
                         <button
@@ -411,9 +408,12 @@ function DetailedPage() {
                         </button>
                       </div>
                     )}
-                  </p>
+                  </div>
                 )}
               </div>
+              {coverLetter && (
+              <p className="font-normal py-4 text-center">SkillMatch uses AI. Check for mistakes.</p>
+              )}
             </div>
           </div>
         </div>
