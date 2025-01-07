@@ -34,56 +34,69 @@ function DetailedPage() {
   };
 
   useEffect(() => {
-
-    const uniqueId = new URLSearchParams(window.location.search).get("data");
-    if (uniqueId) {
-      window.postMessage(
-        { type: "FROM_REACT_APP", action: "getData", uniqueId },
-        "*"
-      );
-    }
-
-  }, []);
-    
+    let interval; // Declare interval outside for access in multiple scopes
   
-  useEffect(() => {
-
+    // Check if there's already data stored in sessionStorage
+    const storedData = sessionStorage.getItem("extensionData");
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setResume(parsedData.resumeText.replace(/\n/g, " "));
+      setJobDescription(parsedData.jobDescription.replace(/\n/g, " "));
+      setExtensionData(parsedData);
+      console.log("Loaded data from sessionStorage");
+      return; // Skip polling if data is already present
+    }
+  
+    // Function to handle incoming messages
     const messageHandler = (event) => {
       if (event.source !== window) return;
-
-      if (event.data.type === "FROM_CONTENT_SCRIPT") {
+  
+      if (event.data?.type === "FROM_CONTENT_SCRIPT") {
         const fetchedData = event.data.data;
-        console.log("2nd if condition");
-        console.log("Extension Data", fetchedData);
-
-        const resumeText = fetchedData.resumeText
-          ? fetchedData.resumeText.split("\n").join(" ")
-          : "";
-        const jobDesc = fetchedData.jobDescription
-          ? fetchedData.jobDescription.split("\n").join(" ")
-          : "";
-
-        // Set states for resume and job description
-        console.log("Resume (before state update):", resumeText);
-        console.log("Job Description (before state update):", jobDesc);
-
+        console.log("Received data from content script:", fetchedData);
+  
+        const resumeText = fetchedData.resumeText?.replace(/\n/g, " ") || "";
+        const jobDesc = fetchedData.jobDescription?.replace(/\n/g, " ") || "";
+  
         setResume(resumeText);
         setJobDescription(jobDesc);
         setExtensionData(fetchedData);
-
-        // Save for debugging or persistence
+  
+        // Save for persistence
         sessionStorage.setItem("extensionData", JSON.stringify(fetchedData));
+  
+        // Stop polling once data is received
+        if (interval) {
+          clearInterval(interval);
+          console.log("Polling stopped as data has been received.");
+        }
       }
     };
-
-    console.log("message handler useEffect");
+  
+    // Attach the event listener
     window.addEventListener("message", messageHandler);
-
+  
+    // Start polling for data
+    interval = setInterval(() => {
+      const uniqueId = new URLSearchParams(window.location.search).get("data");
+      if (uniqueId) {
+        console.log("Polling for data with uniqueId:", uniqueId);
+        window.postMessage(
+          { type: "FROM_REACT_APP", action: "getData", uniqueId },
+          "*"
+        );
+      }
+    }, 1000); // Poll every second
+  
+    // Cleanup on unmount
     return () => {
-      window.removeEventListener("message", messageHandler);
+      if (interval) {
+        clearInterval(interval); // Clear the polling interval
+      }
+      window.removeEventListener("message", messageHandler); // Remove the event listener
     };
-  }, []);
-
+  }, []); // Dependency array ensures this runs only once
+  
   // Trigger `fetchDetailedOverview` only when both `resume` and `jobDescription` are updated
   useEffect(() => {
     const fetchDetailedOverview = async () => {
