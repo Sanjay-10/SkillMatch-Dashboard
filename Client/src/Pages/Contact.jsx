@@ -3,6 +3,7 @@ import emailjs from 'emailjs-com'; // Import EmailJS
 import success from '/src/assets/success.png';
 import fail from '/src/assets/failed.png';
 import { Link } from 'react-router-dom';
+import Footer from '../components/Footer';
 
 function Contact() {
   const [isSent, setIsSent] = useState(null); 
@@ -54,7 +55,8 @@ function Contact() {
   };
 
   return (
-    <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+    <div>
+    <div className="isolate bg-white px-6 pt-24  lg:px-8">
     
       {/* Success or Failure Alert */}
       {isSent !== null && (
@@ -189,6 +191,8 @@ function Contact() {
         </div>
       </form>
     </div>
+      <Footer />
+      </div>
   );
 }
 

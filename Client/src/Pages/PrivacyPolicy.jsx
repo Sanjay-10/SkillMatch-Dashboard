@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../components/Header";
 import Background from "../components/Background";
+import Footer from "../components/Footer";
 
 function PrivacyPolicyPage() {
   return (
@@ -130,6 +131,7 @@ function PrivacyPolicyPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

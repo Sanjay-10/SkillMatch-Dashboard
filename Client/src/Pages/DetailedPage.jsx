@@ -7,6 +7,7 @@ import Header from "../components/Header";
 import Background from "../components/Background";
 import { CheckIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 import { Button } from "@material-tailwind/react";
+import Footer from "../components/Footer";
 
 
 function DetailedPage() {
@@ -127,7 +128,7 @@ function DetailedPage() {
     };
 
     fetchDetailedOverview();
-  }, [resume, jobDescription]); // Dependency array ensures it runs when both are updated
+  }, [resume, jobDescription]); 
 
   const fetchCoverLetter = async () => {
     try {
@@ -420,6 +421,7 @@ function DetailedPage() {
 
         {/* MAIN CONTENT END */}
       </div>
+      <Footer />
     </div>
   );
 }

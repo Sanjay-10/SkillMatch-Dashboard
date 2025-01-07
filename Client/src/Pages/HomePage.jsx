@@ -5,9 +5,11 @@ import Background from "../components/Background";
 import Home from "../assets/Home.png";
 import Analyze from "../assets/Analyze.png";
 import Analyze2 from "../assets/Analyze-2.png";
+import Footer from "../components/Footer";
 
 const HomePage = () => {
   return (
+    <div>
     <div className="mx-auto  items-center gap-x-8 gap-y-12  max-w-7xl grid-cols-3 px-8">
       <Header />
       <Background />       
@@ -56,8 +58,9 @@ const HomePage = () => {
 
           </div>
         
-
     </div>
+<Footer />
+</div>
   );
 };
 
