@@ -8,6 +8,7 @@ import Background from "../components/Background";
 import { CheckIcon, DocumentDuplicateIcon } from "@heroicons/react/24/outline";
 import { Button } from "@material-tailwind/react";
 import Footer from "../components/Footer";
+import Loader from "../components/Loader/Loader";
 
 
 function DetailedPage() {
@@ -203,7 +204,7 @@ function DetailedPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <p className="text-xl font-medium">Loading...</p>
+        <Loader />
       </div>
     );
   }
