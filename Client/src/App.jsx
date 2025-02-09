@@ -6,10 +6,12 @@ import Contact from './Pages/Contact';
 import DetailedPage from './Pages/DetailedPage';
 import HomePage from './Pages/HomePage';
 import PrivacyPolicy from './Pages/PrivacyPolicy';
+import { Analytics } from "@vercel/analytics/react";
 
 function App() {
   return (
     <div>
+      <Analytics />
       <BrowserRouter>
         <Routes> 
           <Route path="/contact" element={<Contact />} />
