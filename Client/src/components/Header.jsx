@@ -12,7 +12,7 @@ function Header() {
 
         <Link to="/">
       <div className="flex lg:flex-1 ">
-        <h5 className="SkillMatch text-[#007bff] font-semibold -m-1.5 p-1.5 text-3xl">
+        <h5 className="SkillMatch text-[#007bff] font-semibold -m-1.5 p-1.5 text-3xl sm:text-xl md:text-2xl">
           SkillMatch
         </h5>
       </div>
